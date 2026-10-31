@@ -255,6 +255,10 @@ automatically before the agent commits changes.
 3. Adjust the formatter command for your project
 ```
 
+## Agent-Scoped Hooks
+
+Custom agents can declare hooks of their own, so automation applies only while that agent is running rather than to every session in the repository. Use this for guardrails or checks that only make sense for one specialized agent. See [Building Custom Agents](../building-custom-agents/) for agent definitions and the [Copilot CLI changelog](https://github.com/github/copilot-cli/blob/main/changelog.md) for the declaration format.
+
 ## Practical Examples
 
 ### Auto-Approve Permissions in CI with PermissionRequest
