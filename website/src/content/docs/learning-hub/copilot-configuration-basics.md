@@ -765,7 +765,7 @@ Use `/autopilot` when you want to flip between supervised and unsupervised opera
 
 > **Enhanced autopilot**: When autopilot mode is active — including when launched with `--autopilot` at startup or during automatic continuation turns — the agent automatically handles elicitation dialogs, `ask_user` prompts, sampling requests, and permission prompts without surfacing them as interactive dialogs. This means long-running automated sessions can proceed end-to-end without manual confirmation steps.
 
-> **Auto allow-all mode**: In addition to the standard allow-all mode (which approves everything), the CLI supports an **auto allow-all** mode that uses an LLM judge to evaluate each tool request. When enabled, the judge automatically approves requests it evaluates as acceptable, and asks you for manual confirmation only for requests it considers risky. This gives you a middle ground between full autopilot and fully supervised operation — most routine actions proceed automatically while unusual or potentially dangerous actions still surface for your review. This mode requires experimental features to be enabled — use `/experimental on` or start the CLI with `--experimental` — then activate it with `/allow-all auto`. See [Compatibility and Migration Notes](#compatibility-and-migration-notes) if you previously relied on the `AUTO_APPROVAL` environment variable for this.
+> **Auto allow-all mode**: In addition to the standard allow-all mode (which approves everything), the CLI supports an **auto allow-all** mode that uses an LLM judge to evaluate each tool request. When enabled, the judge automatically approves requests it evaluates as acceptable, and asks you for manual confirmation only for requests it considers risky. This gives you a middle ground between full autopilot and fully supervised operation — most routine actions proceed automatically while unusual or potentially dangerous actions still surface for your review. Activate it with `/allow-all auto`; Assisted Permissions no longer require experimental mode. See [Compatibility and Migration Notes](#compatibility-and-migration-notes) if you previously relied on the `AUTO_APPROVAL` environment variable for this.
 
 > **Read-only `gh` CLI commands**: Read-only `gh` commands — such as `gh issue list`, `gh pr view`, `gh run status`, and other commands that don't write to GitHub — are **automatically approved** without a permission prompt. Only commands that write to GitHub (like creating issues, merging PRs) still require explicit approval. This reduces friction during exploratory sessions where you frequently check issue or PR status.
 
@@ -939,6 +939,18 @@ Run `/config` to open a dedicated sidebar configuration screen inside the CLI, g
 
 `/sandbox` can keep sandboxing enabled for the current session only, without changing your global setting. Sandboxed commands can use `HTTPS_PROXY` and `HTTP_PROXY` for host-rule traffic when no sandbox proxy is configured, and sandboxed git on github.com can use a `GITHUB_TOKEN` supplied through `credentials.envVars`. When sandboxed commands inherit your host proxy settings, `NO_PROXY` and `ALL_PROXY` are honored too.
 
+### Sandbox Extensions
+
+The **Sandbox extensions** setting runs extension processes inside the sandbox, so extensions are subject to the same filesystem and network restrictions as sandboxed commands.
+
+### Settings Dashboard and Opening Sessions in VS Code
+
+`/settings` opens a unified dashboard for all users, with global search across settings and local resources. Use `/code` to open the current session in VS Code. `copilot config` also exposes a Fusion tier setting.
+
+### Session Working Directory Variable
+
+Set `COPILOT_SESSION_CWD` to control the working directory used when launching and expanding LSP and local MCP server configurations.
+
 ### Assisted Permissions Guidance
 
 In Assisted permission mode, the `assistedApprovalInstructions` setting lets you supply your own guidance to the permission judge, so confirmation decisions reflect your team's norms (for example, which commands are always safe to run).
@@ -962,7 +974,7 @@ This section collects settings and behaviors that **changed or were renamed** in
 - **`worktreeBaseRef` now defaults to `HEAD` for all worktree-creation paths.** The `--worktree` startup flag previously defaulted to branching from the remote default branch instead.
 - **Sandbox local network access is now allowed by default.** Earlier releases blocked localhost and private-network access from sandboxed commands. Current releases allow it, so commands can reach local services; turn off **Allow local network** in `/sandbox` if you want the stricter isolation. Linux sandboxing also requires `slirp4netns`, `nsenter`, `iptables`, `ip6tables`, `iptables-restore`, and `ip6tables-restore` on `PATH`.
 - **`copilot plugins` lost its cross-kind flags.** The `--kind`, `--scope`, `--mcp`, and `--skill` flags were removed; `copilot plugins list` is now an alias of `copilot plugin list` and reports only plugins. Scripts using `copilot plugins install --skill [--scope project]` should switch to `copilot skill add [--project]`, and scripts reading `.plugins` from `copilot plugins list --json` should expect a flat array instead of the previous `{ plugins, errors }` object.
-- **Auto allow-all mode requires experimental mode.** The previous `AUTO_APPROVAL` environment variable approach was removed in favor of `/experimental on` (or `--experimental`) plus `/allow-all auto`.
+- **Auto allow-all mode (Assisted Permissions) no longer requires experimental mode.** The previous `AUTO_APPROVAL` environment variable approach was removed; activate the mode with `/allow-all auto`. Earlier releases (before v1.0.104) also required `/experimental on` or `--experimental`.
 - **Ctrl+D no longer queues messages.** It now uses its default terminal behavior; use **Ctrl+Q** or **Ctrl+Enter** to queue a message instead.
 - **The CLI's command-line parser was rewritten** (moving off Commander to a Rust-based grammar). As a result, some error and help wording changed, `copilot login --host` now works correctly, and `--max-autopilot-continues` no longer accepts scientific notation as a value.
 - **Model availability changes over time.** The model picker periodically retires older models; if a model you previously pinned in a custom agent or config disappears from `/model`, switch to a current model or a [family alias](#model-picker) instead.
