@@ -939,6 +939,18 @@ Run `/config` to open a dedicated sidebar configuration screen inside the CLI, g
 
 `/sandbox` can keep sandboxing enabled for the current session only, without changing your global setting. Sandboxed commands can use `HTTPS_PROXY` and `HTTP_PROXY` for host-rule traffic when no sandbox proxy is configured, and sandboxed git on github.com can use a `GITHUB_TOKEN` supplied through `credentials.envVars`. When sandboxed commands inherit your host proxy settings, `NO_PROXY` and `ALL_PROXY` are honored too.
 
+### Sandbox Extensions
+
+The **Sandbox extensions** setting runs extension processes inside the sandbox, so extensions are subject to the same filesystem and network restrictions as sandboxed commands.
+
+### Settings Dashboard and Opening Sessions in VS Code
+
+`/settings` opens a unified dashboard for all users, with global search across settings and local resources. Use `/code` to open the current session in VS Code. `copilot config` also exposes a Fusion tier setting.
+
+### Session Working Directory Variable
+
+Set `COPILOT_SESSION_CWD` to control the working directory used when launching and expanding LSP and local MCP server configurations.
+
 ### Assisted Permissions Guidance
 
 In Assisted permission mode, the `assistedApprovalInstructions` setting lets you supply your own guidance to the permission judge, so confirmation decisions reflect your team's norms (for example, which commands are always safe to run).
